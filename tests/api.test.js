@@ -12,3 +12,11 @@ test("POST /tareas sin título responde 400 y no crea nada", async () => {
   expect(res.status).toBe(400);
   expect(res.body.error).toMatch(/titulo/);
 });
+
+test("GET /tareas devuelve tareas con su estado", async () => {
+  await request(app).post("/tareas").send({ titulo: "Repasar" });
+  const res = await request(app).get("/tareas");
+  const tarea = res.body.find((t) => t.titulo === "Repasar");
+  expect(res.status).toBe(200);
+  expect(tarea.estado).toBe("PENDIENTE");
+});
