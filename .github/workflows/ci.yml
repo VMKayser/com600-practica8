@@ -6,13 +6,17 @@ on:
 jobs:
   pruebas:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22"]
     steps:
       - uses: actions/checkout@v4
-      - name: Preparar Node.js 20
+      - name: Preparar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: ${{ matrix.node }}
+          cache: npm
       - name: Instalar dependencias
         run: npm ci
       - name: Ejecutar la suite de la Práctica 7
@@ -23,7 +27,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: cobertura-${{ github.sha }}
+          name: cobertura-${{ matrix.node }}-${{ github.sha }}
           path: coverage/
           retention-days: 7
 
